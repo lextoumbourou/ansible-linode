@@ -1,8 +1,16 @@
-# Linode Ansible Module
+# Linode Module for Ansible
+
+## Status
+
+This code is currently in Alpha and should not be used in production. I'm hoping to get a Beta release out as soon as possible.
 
 ## Overview
 
-Automate all the things!!!
+A simple way to manage devices host at Linode.
+
+## How to Use
+
+At this stage, just don't.
 
 ## Tests
 
