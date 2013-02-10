@@ -1,14 +1,17 @@
+import os
 import subprocess
+
 import private
 
-# Script shold look something like this
-# ansible/hacking/test-module -m ./linode_create.py -a 'name="{{ HOSTNAME_TO_CREATE }}" api_key="{{ API_KEY }}" plan="{{ TEST_PLAN }}" datacenter="{{ TEST_DATACENTER }}" payment_term=1'
+current_dir = '.'
 
 # Start off by creating the host, or modify it if it exists
-command = ("ansible/hacking/test-module -m ./linode_create.py"
-           "-a 'name=\"{0}\" api_key=\"{1}\" plan=\"{2}\" datacenter=\"{3}\""
-           "payment_term=\"{4}\" state=\"present\"").format(
-                private.LABEL, private.API_KEY, private.PLAN, 
-                private.DATACENTER, private.PAYMENT_TERM)
+command = ("{0}/ansible/hacking/test-module -m {1}/linode_create.py"
+           " -a 'name=\"{2}\" api_key=\"{3}\" plan=\"{4}\" datacenter=\"{5}\""
+           " payment_term=\"{6}\" state=\"present\" disk_size=\"{7}\""
+           " root_password=\"{8}\" distribution=\"{9}\" swap_size=256 wait=true'").format(
+                current_dir, current_dir, private.LABEL, private.API_KEY, 
+                private.PLAN, private.DATACENTER, private.PAYMENT_TERM, private.DISK_SIZE,
+                private.ROOT_PASS, private.DISTRIBUTION) 
 
-subprocess.check_output(command, "Blah") 
+subprocess.call(command, shell=True)
