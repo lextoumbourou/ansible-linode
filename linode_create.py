@@ -203,6 +203,39 @@ def main():
         module.fail_json(
             msg = '%s: %s' % (data['ERRORCODE'], data['ERRORMESSAGE']))
 
+    # Attempt to get the host
+    linode_id = get_host_id(label, lin)
+
+    # Start off with the basic Linode functionality
+    if state != 'present':
+        if not linode_id:
+            # The server doesn't exist, so we're good
+            if state == 'absent':
+                module.exit_json(changed=False, name=label, state=state)
+            else:
+                module.fail_json(
+                    msg = 'Unable to %s Linode, label "%s" not found' % (
+                        state, label))
+
+        # Perform one of the actions
+        if state == 'rebooted':
+            result = lin.linode_reboot(LinodeID=linode_id)
+        elif state == 'booted':
+           result = lin.linode_boot(LinodeID=linode_id)
+        elif state == 'shutdown':
+            result = lin.linode_shutdown(LinodeID=linode_id)
+        elif state == 'absent':
+            lin.linode_delete(LinodeID=linode_id, skipChecks=1)
+
+        # Wait for the job to complete if requested
+        if wait:
+            job = wait_for_job(result['JobID'], linode_id, timeout, lin)
+            if not job:
+                module.fail_json(
+                    msg = 'Timeout while waiting for job %s' % (job_result['JobID']))
+
+        module.exit_json(changed=True, name=label, state=state)
+    
     # Check plan is available, if so, return the id
     plan_id = get_plan_id(plan, lin)
     if not plan_id:
