@@ -149,35 +149,44 @@ def wait_for_job(job_id, linode_id, timeout, lin):
 def main():
     module = AnsibleModule(
         argument_spec = dict(
-            name = dict(required=True, aliases=['hostname', 'label']),
-            datacenter = dict(required=False),
+            # Minimum args
             api_key = dict(required=True),
-            plan = dict(required=True),
-            payment_term = dict(required=True),
-            distribution = dict(required=True),
-            root_password = dict(required=True),
-            disk_size = dict(required=True),
-            state = dict(required=False, default='present'),
+            name = dict(required=True, aliases=['hostname', 'label']),
+            state = dict(default='present', choices=[
+                'present', 'absent', 'rebooted', 'shutdown', 'booted']),
+
+            # Args dependant on present (eg, if it's a new Linode, we need to know this stuff)
+            datacenter = dict(required=False),
+            plan = dict(required=False),
+            payment_term = dict(required=False, choices=['1', '12', '24']),
+            distribution = dict(required=False),
+            root_password = dict(required=False),
+            disk_size = dict(required=False),
             display_group = dict(required=False),
             disk_label = dict(required=False, default='ansible_disk'),
             swap_size = dict(required=False, default=256),
-            root_ssh_key = dict(required=False)
+            root_ssh_key = dict(required=False),
+
+            # Non-required args
             wait = dict(choices=BOOLEANS, default=False),
+            timeout = dict(default=90)
         )
     )
-    label = module.params.get('name')
-    datacenter = module.params.get('datacenter')
     api_key = module.params.get('api_key')
+    label = module.params.get('name')
+    state = module.params.get('state')
+
+    datacenter = module.params.get('datacenter')
     plan = module.params.get('plan')
     payment_term = module.params.get('payment_term')
     distribution = module.params.get('distribution')
     root_password = module.params.get('root_password')
     disk_size = module.params.get('disk_size')
-    state = module.params.get('state')
     display_group = module.params.get('display_group')
     swap_size = module.params.get('swap_size')
     root_ssh_key = module.params.get('root_ssh_key')
     wait = module.params.get('wait')
+    timeout = module.params.get('timeout')
 
     # Allow linode enviroment variables to be used if Ansible vars aren't set
     if not api_key and 'LINODE_API_KEY' in os.environ:
