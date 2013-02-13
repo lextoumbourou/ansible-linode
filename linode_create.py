@@ -258,14 +258,14 @@ def main():
     linode_id = get_host_id(label, lin)
     if not linode_id:
         try:
-            res = lin.linode_create(
+            result = lin.linode_create(
                 DatacenterID=dc_id, PlanID=plan_id, PaymentTerm=payment_term)
         except lin.api.Api as e: 
             module.fail_json(
                 msg = 'Unable to create Linode. %s: %s' % (
                     e.values[0]['ERRORCODE'], e.values[0]['ERRORMESSAGE']))
 
-        linode_id = res['LinodeID']
+        linode_id = result['LinodeID']
 
         # Update details to ensure we can find it again
         lin.linode_update(
@@ -279,21 +279,20 @@ def main():
                   'rootPass': root_password, 'Size': disk_size, 'label': 'Root Partition'}
         if root_ssh_key:
             kwargs['rootSSHKey'] = root_ssh_key
-        res = lin.linode_disk_createfromdistribution(**kwargs)
+        result = lin.linode_disk_createfromdistribution(**kwargs)
 
         # Wait for the disk to be created, if requested
         if wait:
-            wait_for_job(res['JOBID'])
+            wait_for_job(result['JobID'], linode_id, timeout, lin)
             
         # Create the swap disk
         kwargs = {'LinodeID': linode_id, 'Label': 'Swap Partition', 
                   'Type': 'swap', 'Size': swap_size}
-        res = lin.linode_disk_create(**kwargs)
+        result = lin.linode_disk_create(**kwargs)
 
         # Wait for the disk to be created, if requested
         if wait:
-            wait_for_job(res['JOBID'])
-
+            wait_for_job(result['JobID'], linode_id, timeout, lin)
 
     # Update details
     lin.linode_update(
@@ -305,7 +304,7 @@ def main():
 
         # Wait for boot if requested
         if wait:
-            wait_for_job(res['JOBID'])
+            wait_for_job(result['JobID'], linode_id, timeout, lin)
 
 # this is magic, see lib/ansible/module_common.py
 #<<INCLUDE_ANSIBLE_MODULE_COMMON>>
