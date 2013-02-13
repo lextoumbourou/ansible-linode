@@ -254,13 +254,6 @@ def main():
         module.fail_json(
             msg = 'Distribution %s not found' % distribution)
 
-    # Check that the payment term is valid
-    valid_payment_terms = [1, 12, 24]
-    payment_term = int(payment_term)
-    if payment_term not in valid_payment_terms:
-        module.fail_json(
-            msg = 'Payment term %s not valid' % datacenter)
-
     # Get or create requested host
     linode_id = get_host_id(label, lin)
     if not linode_id:
