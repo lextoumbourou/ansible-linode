@@ -123,7 +123,7 @@ def linode_is_booted(linode_id, lin):
 
     return False
 
-def wait_for_job(job_id, timeout, lin):
+def wait_for_job(job_id, linode_id, timeout, lin):
     """
     Wait until a job is complete up until mandatory timeout value
 
@@ -137,8 +137,8 @@ def wait_for_job(job_id, timeout, lin):
     """
     count = 0
     while count <= timeout:
-        job = lin.linode_job_list(LinodeID=linode_id, JobID=res['JOBID'])
-        if job['HOST_SUCCESS'] == 1:
+        job = lin.linode_job_list(LinodeID=linode_id, JobID=job_id)
+        if job[0]['HOST_SUCCESS'] == 1:
             return True   
         time.sleep(2)
         count += 2
