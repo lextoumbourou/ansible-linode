@@ -225,7 +225,7 @@ def main():
         elif state == 'shutdown':
             result = lin.linode_shutdown(LinodeID=linode_id)
         elif state == 'absent':
-            lin.linode_delete(LinodeID=linode_id, skipChecks=1)
+            result = lin.linode_delete(LinodeID=linode_id, skipChecks=1)
 
         # Wait for the job to complete if requested
         if wait:
