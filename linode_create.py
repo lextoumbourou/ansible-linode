@@ -106,6 +106,33 @@ def get_distribution_id(distribution, lin):
 
     return None
 
+
+def get_kernel_id(kernel, lin):
+    """
+    Return kernel id if valid
+
+    args:
+        kernel - string or int - name of kernel or id
+        lin - linode.api.Api object - connected Api class
+
+    returns:
+        int or None
+    """
+    # if it's a number, we'll ensure it's an int
+    if kernel.isdigit():
+        kernel = int(kernel)
+
+    for k in lin.avail_kernels():
+        if type(kernel) is int:
+            if (k['KERNELID'] == kernel):
+                return k['KERNELID']
+        else:
+            if kernel in k['LABEL']:
+                return k['KERNELID']
+
+    return None
+
+
 def linode_is_booted(linode_id, lin):
     """
     Return True if Linode is booted
@@ -165,6 +192,7 @@ def main():
             display_group = dict(required=False),
             disk_label = dict(required=False, default='ansible_disk'),
             swap_size = dict(required=False, default=256),
+            kernel = dict(required=False, default='Latest 32 bit'),
             root_ssh_key = dict(required=False),
 
             # Non-required args
@@ -185,6 +213,7 @@ def main():
     display_group = module.params.get('display_group')
     swap_size = module.params.get('swap_size')
     root_ssh_key = module.params.get('root_ssh_key')
+    kernel = module.params.get('kernel')
     wait = module.params.get('wait')
     timeout = module.params.get('timeout')
 
@@ -256,6 +285,12 @@ def main():
             module.fail_json(
                 msg = 'Distribution %s not found' % distribution)
 
+        # Get kernel id if it's valid
+        kernel_id = get_kernel_id(kernel, lin)
+        if not kernel_id:
+            module.fail_json(
+                msg = 'Kernel %s not found' % kernel)
+
         # Get or create requested host
         linode_id = get_host_id(label, lin)
         if not linode_id:
@@ -282,6 +317,7 @@ def main():
             if root_ssh_key:
                 kwargs['rootSSHKey'] = root_ssh_key
             result = lin.linode_disk_createfromdistribution(**kwargs)
+            root_disk_partition = result['DiskID']
 
             # Wait for the disk to be created, if requested
             if wait:
@@ -291,22 +327,32 @@ def main():
             kwargs = {'LinodeID': linode_id, 'Label': 'Swap Partition', 
                       'Type': 'swap', 'Size': swap_size}
             result = lin.linode_disk_create(**kwargs)
+            swap_disk_partition = result['DiskID']
 
             # Wait for the disk to be created, if requested
             if wait:
                 wait_for_job(result['JobID'], linode_id, timeout, lin)
 
+            # Create boot configuration
+            result = lin.linode_config_create(
+                LinodeID=linode_id, KernelID=kernel_id, Label=kernel, 
+                DiskList='%d,%d' % (root_disk_partition, swap_disk_partition))
+
+            config_id = result['ConfigID']
+
         # Update details
         lin.linode_update(
             LinodeID=linode_id, label=label, lpm_displayGroup=display_group)
 
-        # Check boot status
-        if state == 'booted' and not linode_is_booted(linode_id, lin):
-            res = lin.boot(LinodeID=linode_id)
+        # Boot Linode
+        if not linode_is_booted(linode_id, lin):
+            result = lin.linode_boot(LinodeID=linode_id)
 
             # Wait for boot if requested
             if wait:
                 wait_for_job(result['JobID'], linode_id, timeout, lin)
+
+            module.exit_json(changed=True, linode_id=linode_id)
 
 # this is magic, see lib/ansible/module_common.py
 #<<INCLUDE_ANSIBLE_MODULE_COMMON>>
