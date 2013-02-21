@@ -1,14 +1,14 @@
 #!/usr/bin/python
 DESCRIPTION = """
 ---
-module: linode_instance
+module: linode_manager
 short_description: create and manage a Linode instance, return a LinodeID
 description:
     - Creates Linodes instance and optionally waits for it to be 'booted'. 
     - Additional, the Linode instance can be shutdown, booted, restarted and destroyed.
     - Currently limited to one root disk created from a distribution and one swap disk
 author_name: Lex Toumbourou
-requirements: ["linode"] # Python API bindings for Linode
+requirements: ["python-linode"] # Python API bindings for Linode
 examples:
   - code: 'local_action: linode_manager api_key=1234 name=server_name 
            plan="Linode 512" datacenter=Tokyo payment_term=1 kernel=3.7.5-linode48 state=present
