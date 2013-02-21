@@ -301,8 +301,7 @@ def main():
             distribution = dict(required=False),
             kernel = dict(required=False, default='Latest 32 bit'),
             root_disk_size = dict(required=False),
-            root_disk_label = dict(required=False, default='ansible_disk'),
-            swap_size = dict(required=False, default=256),
+            swap_disk_size = dict(required=False, default=256),
             root_password = dict(required=False),
             root_ssh_key = dict(required=False),
 
@@ -320,12 +319,13 @@ def main():
     plan = module.params.get('plan')
     payment_term = module.params.get('payment_term')
     distribution = module.params.get('distribution')
-    root_password = module.params.get('root_password')
-    disk_size = module.params.get('disk_size')
-    display_group = module.params.get('display_group')
-    swap_size = module.params.get('swap_size')
-    root_ssh_key = module.params.get('root_ssh_key')
+    root_disk_size = module.params.get('root_disk_size')
+    swap_disk_size = module.params.get('swap_disk_size')
     kernel = module.params.get('kernel')
+    root_password = module.params.get('root_password')
+    root_ssh_key = module.params.get('root_ssh_key')
+
+    display_group = module.params.get('display_group')
     wait = module.params.get('wait')
     timeout = module.params.get('timeout')
 
@@ -425,7 +425,7 @@ def main():
         if not lin.linode_disk_list(LinodeID=linode_id):
             # Create the Linode from distribution
             kwargs = {'LinodeID': linode_id, 'DistributionID': dist_id, 
-                      'rootPass': root_password, 'Size': disk_size, 'label': 'Root Partition'}
+                      'rootPass': root_password, 'Size': root_disk_size, 'label': 'Root Partition'}
             if root_ssh_key:
                 kwargs['rootSSHKey'] = root_ssh_key
             result = lin.linode_disk_createfromdistribution(**kwargs)
@@ -437,7 +437,7 @@ def main():
                 
             # Create the swap disk
             kwargs = {'LinodeID': linode_id, 'Label': 'Swap Partition', 
-                      'Type': 'swap', 'Size': swap_size}
+                      'Type': 'swap', 'Size': swap_disk_size}
             result = lin.linode_disk_create(**kwargs)
             swap_disk_partition = result['DiskID']
 
