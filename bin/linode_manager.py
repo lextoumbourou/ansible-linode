@@ -299,15 +299,15 @@ def main():
             plan = dict(required=False),
             payment_term = dict(required=False, choices=['1', '12', '24']),
             distribution = dict(required=False),
-            root_password = dict(required=False),
-            disk_size = dict(required=False),
-            display_group = dict(required=False),
-            disk_label = dict(required=False, default='ansible_disk'),
-            swap_size = dict(required=False, default=256),
             kernel = dict(required=False, default='Latest 32 bit'),
+            root_disk_size = dict(required=False),
+            root_disk_label = dict(required=False, default='ansible_disk'),
+            swap_size = dict(required=False, default=256),
+            root_password = dict(required=False),
             root_ssh_key = dict(required=False),
 
             # Non-required args
+            display_group = dict(required=False),
             wait = dict(choices=BOOLEANS, default=False),
             timeout = dict(default=90)
         )
