@@ -94,6 +94,11 @@ options:
       - Optionally include an ssh key for root 
     required: false
     default: null
+  display_group:
+    description:
+      - Optionally specify which display group to place the Linode in
+    required: false
+    default: null
   wait:
     description:
       - wait for Linode instance to be in state 'booted' before returning
