@@ -2,15 +2,57 @@
 
 ## Status
 
-This code is currently in Alpha and should not be used in production. I'm hoping to get a Beta release out as soon as possible.
+Currently in beta. This is my first Ansible module and I'm still getting my head around how they work, so bare with me a bit.
+If you are brave and want to play with it please go right ahead.
 
 ## Overview
 
-A simple way to manage devices host at Linode.
+A simple way to manage devices host at Linode. Supports creating, destroying, shutting down, rebooting and starting a Linode.
 
-## How to Use
+## Installation
 
-At this stage, just don't.
+Copy the library direction into the directory where you Playbooks are located.
+
+```
+> cp -R library /etc/ansible/company_name/
+```
+## Playbook Examples
+
+Create a Linode
+```
+local_action: linode_manager api_key=abc123 name=webserver datacenter=Tokyo
+              plan="Linode 512" payment_term=1 distribution="Ubuntu 12.04 LTS"
+              kernel="3.7.5-linode48" root_disk_size=24320 swap_disk_size=256
+              root_password=hunter2 display_group="Production" state=present wait=true
+```
+
+Remove a Linode
+```
+local_action: linode_manager api_key=123abc name=badserver state=absent
+```
+
+Shutdown a Linode
+```
+local_action: linode_manager api_key=123abc name=webserver state=shutdown'
+```
+
+## Options
+
+Coming soon
+
+## Dependacies
+
+Requires **python-linode** available via pip.
+
+```bash
+> sudo pip install python-linode
+```
+
+## Limitations
+
+* No support for private IP addresses (I think a separate module should address this)
+* Only supports the creation of 1 disk from a distribution
+* No support for NodeBalancer, StackScripts and DNS (again, perhaps a separate module should tackle this?)
 
 ## Tests
 
@@ -20,14 +62,20 @@ To run the tests:
 
 * Clone the Ansible repo and make the test-module script executable
 
-```
-git clone git@github.com:ansible/ansible.git
-chmod +x ansible/hacking/test-module
+```bash
+> git clone git@github.com:ansible/ansible.git
+> chmod +x ansible/hacking/test-module
 ```
 
 * Create the private.py file and update it with your API key and details
 
 ```
-cp private-example.py private.py
-vi private.py
+> cp private-example.py private.py
+> vi private.py
+```
+
+* Run test_scripts.py (by default, the scripts will charge your account, so be careful!)
+
+```
+> python test_scripts
 ```
