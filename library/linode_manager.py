@@ -465,6 +465,8 @@ def main():
                 wait_for_job(result['JobID'], linode_id, timeout, lin)
 
             module.exit_json(changed=True, linode_id=linode_id)
+        else:
+            module.exit_json(changed=False, linode_id=linode_id)
 
 # this is magic, see lib/ansible/module_common.py
 #<<INCLUDE_ANSIBLE_MODULE_COMMON>>
