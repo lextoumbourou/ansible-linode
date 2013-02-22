@@ -262,6 +262,7 @@ def wait_for_job(job_id, linode_id, timeout, lin):
 
     args:
         job_id - int - job identifier
+        linode_id - int - linode identifier
         timeout - int - time in seconds to wait for job to complete
         lin - linode.api.Api object - connected Api class
 
