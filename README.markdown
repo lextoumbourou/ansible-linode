@@ -7,7 +7,7 @@ If you are brave and want to play with it please go right ahead.
 
 ## Overview
 
-A simple way to manage devices host at Linode. Supports creating, destroying, shutting down, rebooting and starting a Linode.
+A simple way to manage Linodes via Ansible. Supports creating, destroying, shutting down, rebooting and starting a Linode.
 
 ## Installation
 
