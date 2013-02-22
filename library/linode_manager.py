@@ -1,114 +1,112 @@
 #!/usr/bin/python
 DESCRIPTION = """
----
-module: linode_manager
-short_description: create and manage a Linode instance, return a LinodeID
-description:
-    - Creates Linodes instance and optionally waits for it to be 'booted'. 
-    - Additional, the Linode instance can be shutdown, booted, restarted and destroyed.
-    - Currently limited to one root disk created from a distribution and one swap disk
-author_name: Lex Toumbourou
-requirements: ["python-linode"] # Python API bindings for Linode
-examples:
-  - code: 'local_action: linode_manager api_key=1234 name=server_name 
-           plan="Linode 512" datacenter=Tokyo payment_term=1 kernel=3.7.5-linode48 state=present
-           root_disk_size=24320 swap_disk_size=256 root_password=hunter2 wait=true'
+--- 
+author_name: "Lex Toumbourou"
+description: 
+  - "Creates Linodes instance and optionally waits for it to be 'booted'."
+  - "Additional, the Linode instance can be shutdown, booted, restarted and destroyed."
+  - "Currently limited to one root disk created from a distribution and one swap disk"
+examples: 
+  - 
+    code: "local_action: linode_manager api_key=1234 name=server_name  plan=\"Linode 512\" datacenter=Tokyo payment_term=1 kernel=3.7.5-linode48 state=present root_disk_size=24320 swap_disk_size=256 root_password=hunter2 wait=true"
     description: "Creates a Linode if it doesn't exist"
-options:
-  api_key:
-    description:
-      - API key use to manage your Linodes
+module: linode_manager
+options: 
+  api_key: 
+    default: ~
+    description: 
+      - "API key use to manage your Linodes"
     required: true
-    default: null
-  name:
-    description:
-      - Name/label/hostname of the Linode instance
-    required: true
-    default: null
+  datacenter: 
+    default: ~
+    description: 
+      - "String or id representing the Linode's datacenter (http://www.linode.com/api/utility/avail.datacenters)"
+    required: false
+  display_group: 
+    default: ~
+    description: 
+      - "Optionally specify which display group to place the Linode in"
+    required: false
+  distribution: 
+    default: ~
+    description: 
+      - "String or id representing the OS on your server (http://www.linode.com/api/utility/avail.distributions)"
+    required: false
+  kernel: 
+    default: ~
+    description: 
+      - "String or id representing the kernel for the configuration profile (http://www.linode.com/api/utility/avail.kernels)"
+    required: false
+  name: 
     aliases: 
-    ['label', 'hostname']
-  state:
-    choices: [ present, absent, rebooted, shutdown, booted ] 
-    description:
-      - Present will create the Linode if it doesn't exist,
-        absent will destroy it (be careful!),
-        shutdown, booted and rebooted will perform the action the name implies,
-        all except rebooted are idempotent actions
+      - label
+      - hostname
+    default: ~
+    description: 
+      - "Name/label/hostname of the Linode instance"
     required: true
-    default: null
-  datacenter:
-    description:
-       - String or datacenter id representing the Linode datacenters the server will reside
-         Examples: http://www.linode.com/api/utility/avail.datacenters
-         Only required if state is present
+  payment_term: 
+    choices: 
+      - 1
+      - 12
+      - 24
+    default: ~
+    description: 
+      - "Length of time in months for payment term"
     required: false
-    default: null
-  plan:
-    description:
-      - String or plan id representing the Linode plan the server will use 
-        Examples: http://www.linode.com/api/utility/avail.linodeplans
-        Only required if state is present
+  plan: 
+    default: ~
+    description: 
+      - "String or id representing the Linode plan (http://www.linode.com/api/utility/avail.linodeplans)"
     required: false
-    default: null
-  payment_term:
-    choices: [ 1, 12, 24 ]
-    description:
-      - Length of time in months that you will prepay for the server
-        Only required if the state is present
+  root_disk_size: 
+    default: ~
+    description: 
+      - "Size of root disk in MB"
     required: false
-    default: null
-  distribution:
-    description:
-      - String or distribution id representing the OS on your server
-        Examples: http://www.linode.com/api/utility/avail.distributions
-        Only required if the state is present
+  root_password: 
+    default: ~
+    description: 
+      - "String representing the root password for the Linode (only changed at node creation)"
     required: false
-    default: null
-  kernel:
-    description:
-       - String or kernel id representing the kernel for the configuration profile
-         Examples: http://www.linode.com/api/utility/avail.kernels
-         Only required if the state is present
+  root_ssh_key: 
+    default: ~
+    description: 
+      - "Optionally include an ssh key for root"
     required: false
-    default: null
-  root_password:
-    description:
-      - String representing the root password for the Linode
-        Note that if the Linode exists, the root password will *not* be changed
+  state: 
+    choices: 
+      - present
+      - absent
+      - rebooted
+      - shutdown
+      - booted
+    default: ~
+    description: 
+      - |-
+          Present will create the Linode if it doesn't exist,
+           absent will destroy it (be careful!),
+           shutdown, booted and rebooted will perform the action the name implies,
+           all except rebooted are idempotent actions
+    required: true
+  swap_disk_size: 
+    default: ~
+    description: 
+      - "Size of swap disk in MB"
     required: false
-    default: null
-  root_disk_size:
-    description:
-      - Size of root disk in MB
-        Only required if the state is present
-    required: false
-    default: null
-  swap_disk_size:
-    description:
-      - Size of swap disk in MB
-        Only required if the state is present
-    required: false
-    default: null
-  root_ssh_key:
-    description:
-      - Optionally include an ssh key for root 
-    required: false
-    default: null
-  display_group:
-    description:
-      - Optionally specify which display group to place the Linode in
-    required: false
-    default: null
-  wait:
-    description:
-      - wait for Linode instance to be in state 'booted' before returning
-    required: false
-    default: false
-  timeout:
-    description:
-      - optionally specify a timeout period in seconds to wait
-    required: false
+  timeout: 
     default: 120
+    description: 
+      - "optionally specify a timeout period in seconds to wait"
+    required: false
+  wait: 
+    default: false
+    description: 
+      - "wait for Linode instance to be in state 'booted' before returning"
+    required: false
+requirements: 
+  - python-linode
+short_description: "create and manage a Linode instance, return a LinodeID"
 """
   
 import sys
