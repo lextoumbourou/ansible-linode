@@ -112,15 +112,11 @@ short_description: "create and manage a Linode instance, return a LinodeID"
 import sys
 import warnings
 
-# I have to catch the warning here because the Linode API module has a Runtime Warning,
-# this will need to be fixed before I'd recommend using this module since root passwords are sent
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=RuntimeWarning)
-    try:
-        from linode import api
-    except ImportError:
-        print "failed=True msg='python-linode required for this module'"
-        sys.exit(1)
+try:
+    from linode import api
+except ImportError:
+    print "failed=True msg='python-linode required for this module'"
+    sys.exit(1)
 
 
 def get_host_id(label, lin):
@@ -144,7 +140,7 @@ def get_host_id(label, lin):
 
 def get_plan_id(plan, lin):
     """
-    Return plan id if available
+    Return PLANID if available
 
     args:
         plan - string or int - name or id of plan
@@ -168,7 +164,7 @@ def get_plan_id(plan, lin):
 
 def get_datacenter_id(datacenter, lin):
     """
-    Return datacenter id if valid
+    Return DATACENTERID if valid
 
     args:
         datacenter - string or int - name of datacenter or id
@@ -197,7 +193,7 @@ def get_datacenter_id(datacenter, lin):
 
 def get_distribution_id(distribution, lin):
     """
-    Return distribution id if valid
+    Return DISTRIBUTIONID if valid
 
     args:
         distribution - string or int - name of distribution or id
@@ -219,7 +215,7 @@ def get_distribution_id(distribution, lin):
 
 def get_kernel_id(kernel, lin):
     """
-    Return kernel id if valid
+    Return KERNELID if valid
 
     args:
         kernel - string or int - name of kernel or id
