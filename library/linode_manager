@@ -13,27 +13,27 @@ examples:
 module: linode_manager
 options: 
   api_key: 
-    default: ~
+    default: null
     description: 
       - "API key use to manage your Linodes"
     required: true
   datacenter: 
-    default: ~
+    default: null
     description: 
       - "String or id representing the Linode's datacenter (http://www.linode.com/api/utility/avail.datacenters)"
     required: false
   display_group: 
-    default: ~
+    default: null
     description: 
       - "Optionally specify which display group to place the Linode in"
     required: false
   distribution: 
-    default: ~
+    default: null
     description: 
       - "String or id representing the OS on your server (http://www.linode.com/api/utility/avail.distributions)"
     required: false
   kernel: 
-    default: ~
+    default: null
     description: 
       - "String or id representing the kernel for the configuration profile (http://www.linode.com/api/utility/avail.kernels)"
     required: false
@@ -41,7 +41,7 @@ options:
     aliases: 
       - label
       - hostname
-    default: ~
+    default: null
     description: 
       - "Name/label/hostname of the Linode instance"
     required: true
@@ -50,27 +50,27 @@ options:
       - 1
       - 12
       - 24
-    default: ~
+    default: 1
     description: 
       - "Length of time in months for payment term"
     required: false
   plan: 
-    default: ~
+    default: null
     description: 
       - "String or id representing the Linode plan (http://www.linode.com/api/utility/avail.linodeplans)"
     required: false
   root_disk_size: 
-    default: ~
+    default: null
     description: 
       - "Size of root disk in MB"
     required: false
   root_password: 
-    default: ~
+    default: null
     description: 
       - "String representing the root password for the Linode (only changed at node creation)"
     required: false
   root_ssh_key: 
-    default: ~
+    default: null
     description: 
       - "Optionally include an ssh key for root"
     required: false
@@ -81,7 +81,7 @@ options:
       - rebooted
       - shutdown
       - booted
-    default: ~
+    default: null
     description:
       - |-
           Present will create the Linode if it doesn't exist,
