@@ -292,7 +292,7 @@ def main():
             # (ie, if it's a new Linode, we need to know this stuff)
             datacenter=dict(required=False),
             plan=dict(required=False),
-            payment_term=dict(required=False, choices=['1', '12', '24']),
+            payment_term=dict(required=False, default=1, choices=['1', '12', '24']),
             distribution=dict(required=False),
             kernel=dict(required=False, default='Latest 32 bit'),
             root_disk_size=dict(required=False),
