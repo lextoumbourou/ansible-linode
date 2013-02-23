@@ -50,7 +50,6 @@ Requires **python-linode** available via pip.
 
 ## Limitations
 
-* No support for private IP addresses (I think a separate module should address this)
 * Only supports the creation of 1 disk from a distribution
 * No support for NodeBalancer, StackScripts and DNS (again, perhaps a separate module should tackle this?)
 

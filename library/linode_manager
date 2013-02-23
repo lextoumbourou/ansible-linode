@@ -254,6 +254,23 @@ def linode_is_booted(linode_id, lin):
 
     return False
 
+def has_private_ip(linode_id, lin):
+    """
+    Return private ip address if exists or False
+
+    args:
+        linode_id - int - linode identifier
+        lin - linode.api.Api object - connected Api class
+
+    returns:
+        string or False
+    """
+    for ip in lin.linode_ip_list(LinodeID=linode_id):
+        if ip['ISPUBLIC'] == 0:
+            return ip['IPADDRESS']
+
+    return False
+
 
 def wait_for_job(job_id, linode_id, timeout, lin):
     """
@@ -291,11 +308,12 @@ def main():
             # (ie, if it's a new Linode, we need to know this stuff)
             datacenter=dict(required=False),
             plan=dict(required=False),
-            payment_term=dict(required=False, default=1, choices=['1', '12', '24']),
+            payment_term=dict(required=False, default='1', choices=['1', '12', '24']),
             distribution=dict(required=False),
             kernel=dict(required=False, default='Latest 32 bit'),
             root_disk_size=dict(required=False),
             swap_disk_size=dict(required=False, default=256),
+            private_ip = dict(required=False, choices=BOOLEANS, default=False),
             root_password=dict(required=False),
             root_ssh_key=dict(required=False),
 
@@ -318,6 +336,7 @@ def main():
     kernel = module.params.get('kernel')
     root_password = module.params.get('root_password')
     root_ssh_key = module.params.get('root_ssh_key')
+    private_ip = module.params.get('private_ip')
 
     display_group = module.params.get('display_group')
     wait = module.params.get('wait')
@@ -449,6 +468,11 @@ def main():
                 DiskList='%d,%d' % (root_disk_partition, swap_disk_partition))
 
             config_id = result['ConfigID']
+
+        # Add a private IP if they want one and it doesn't exist
+        if private_ip:
+            if not has_private_ip(linode_id, lin):
+                result = lin.linode_ip_addprivate(LinodeID = linode_id)
 
         # Update details
         lin.linode_update(
