@@ -1,10 +1,5 @@
 # Linode Module for Ansible
 
-## Status
-
-Currently in beta. This is my first Ansible module and I'm still getting my head around how they work, so bare with me a bit.
-If you are brave and want to play with it please go right ahead.
-
 ## Overview
 
 A simple way to manage Linodes via Ansible. Supports creating, destroying, shutting down, rebooting and starting a Linode.
