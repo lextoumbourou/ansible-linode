@@ -11,7 +11,7 @@ A simple way to manage Linodes via Ansible. Supports creating, destroying, shutt
 
 ## Installation
 
-Copy the library direction into the directory where you Playbooks are located.
+Copy the library direction into the directory where your Playbooks are located.
 
 ```
 > cp -R library /etc/ansible/company_name/
@@ -33,7 +33,7 @@ local_action: linode_manager api_key=123abc name=badserver state=absent
 
 Shutdown a Linode
 ```
-local_action: linode_manager api_key=123abc name=webserver state=shutdown'
+local_action: linode_manager api_key=123abc name=webserver state=shutdown
 ```
 
 ## Options
