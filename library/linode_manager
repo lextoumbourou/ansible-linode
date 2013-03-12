@@ -1,15 +1,29 @@
 #!/usr/bin/python
-DESCRIPTION = """
+# -*- coding: utf-8 -*-
+
+# (c) 2013, Lex Toumbourou <lextoumbourou@gmail.com>
+#
+# This file is part of Ansible
+#
+# Ansible is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Ansible is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
+
+DOCUMENTATION = '''
 --- 
-author_name: "Lex Toumbourou"
-description: 
-  - "Creates Linodes instance and optionally waits for it to be 'booted'."
-  - "Additional, the Linode instance can be shutdown, booted, restarted and destroyed."
-  - "Currently limited to one root disk created from a distribution and one swap disk"
-examples: 
-  - code: "local_action: linode_manager api_key=1234 name=server_name  plan=\"Linode 512\" datacenter=Tokyo payment_term=1 kernel=3.7.5-linode48 state=present root_disk_size=24320 swap_disk_size=256 root_password=hunter2 wait=true"
-    description: "Creates a Linode if it doesn't exist"
 module: linode_manager
+short_description: Manage your Linodes
+description: 
+    - Supports creating and managing Linodes instances from within Playbooks
 options: 
   api_key: 
     default: null
@@ -82,11 +96,7 @@ options:
       - booted
     default: null
     description:
-      - |-
-          Present will create the Linode if it doesn't exist,
-           absent will destroy it (be careful!),
-           shutdown, booted and rebooted will perform the action the name implies,
-           all except rebooted are idempotent actions
+      - Present will create the Linode if it doesn't exist, absent will destroy it (be careful!), shutdown, booted and rebooted will perform the action the name implies, all except rebooted are idempotent actions
     required: true
   swap_disk_size: 
     default: ~
@@ -103,10 +113,12 @@ options:
     description:
       - "wait for Linode instance to be in state 'booted' before returning"
     required: false
-requirements:
-  - python-linode
-short_description: "create and manage a Linode instance, return a LinodeID"
-"""
+examples:
+    - code: "local_action: linode_manager api_key=1234 name=server_name  plan='Linode 512' datacenter=Tokyo payment_term=1 kernel=3.7.5-linode48 state=present root_disk_size=24320 swap_disk_size=256 root_password=hunter2 wait=true"
+      description: Create a new Linode called 'server_name' on the Linode 512 payment plan, does nothing if device already exists
+    - code: "local_action: linode_manager name=webserver01 wait=yes"
+      description: Restart a Linode called webserver01 and wait for it to finish booting
+'''
 
 import sys
 import warnings

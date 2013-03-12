@@ -16,29 +16,136 @@ Copy the library direction into the directory where your Playbooks are located.
 ```
 > cp -R library /etc/ansible/company_name/
 ```
-## Playbook Examples
-
-Create a Linode
-```
-local_action: linode_manager api_key=abc123 name=webserver datacenter=Tokyo
-              plan="Linode 512" payment_term=1 distribution="Ubuntu 12.04 LTS"
-              kernel="3.7.5-linode48" root_disk_size=24320 swap_disk_size=256
-              root_password=hunter2 display_group="Production" state=present wait=true
-```
-
-Remove a Linode
-```
-local_action: linode_manager api_key=123abc name=badserver state=absent
-```
-
-Shutdown a Linode
-```
-local_action: linode_manager api_key=123abc name=webserver state=shutdown
-```
 
 ## Options
 
-Coming soon
+<table>
+<tr>
+<th class="head">parameter</th>
+<th class="head">required</th>
+<th class="head">default</th>
+<th class="head">choices</th>
+<th class="head">comments</th>
+</tr>
+<tr>
+<td>datacenter</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>String or id representing the Linode's datacenter (http://www.linode.com/api/utility/avail.datacenters)</td>
+</tr>
+<tr>
+<td>name</td>
+<td>yes</td>
+<td></td>
+<td><ul></ul></td>
+<td>Name/label/hostname of the Linode instance</td>
+</tr>
+<tr>
+<td>kernel</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>String or id representing the kernel for the configuration profile (http://www.linode.com/api/utility/avail.kernels)</td>
+</tr>
+<tr>
+<td>swap_disk_size</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Size of swap disk in MB</td>
+</tr>
+<tr>
+<td>root_disk_size</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Size of root disk in MB</td>
+</tr>
+<tr>
+<td>root_ssh_key</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Optionally include an ssh key for root</td>
+</tr>
+<tr>
+<td>payment_term</td>
+<td>no</td>
+<td>1</td>
+<td><ul><li>1</li><li>12</li><li>24</li></ul></td>
+<td>Length of time in months for payment term</td>
+</tr>
+<tr>
+<td>state</td>
+<td>yes</td>
+<td></td>
+<td><ul><li>present</li><li>absent</li><li>rebooted</li><li>shutdown</li><li>booted</li></ul></td>
+<td>Present will create the Linode if it doesn't exist, absent will destroy it (be careful!), shutdown, booted and rebooted will perform the action the name implies, all except rebooted are idempotent actions</td>
+</tr>
+<tr>
+<td>display_group</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>Optionally specify which display group to place the Linode in</td>
+</tr>
+<tr>
+<td>plan</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>String or id representing the Linode plan (http://www.linode.com/api/utility/avail.linodeplans)</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>no</td>
+<td>120</td>
+<td><ul></ul></td>
+<td>optionally specify a timeout period in seconds to wait</td>
+</tr>
+<tr>
+<td>distribution</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>String or id representing the OS on your server (http://www.linode.com/api/utility/avail.distributions)</td>
+</tr>
+<tr>
+<td>api_key</td>
+<td>yes</td>
+<td></td>
+<td><ul></ul></td>
+<td>API key use to manage your Linodes</td>
+</tr>
+<tr>
+<td>root_password</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>String representing the root password for the Linode (only changed at node creation)</td>
+</tr>
+<tr>
+<td>wait</td>
+<td>no</td>
+<td></td>
+<td><ul></ul></td>
+<td>wait for Linode instance to be in state 'booted' before returning</td>
+</tr>
+</table>
+
+## Examples
+
+* Create a new Linode called 'server_name' on the Linode 512 payment plan, does nothing if device already exists
+
+```
+local_action: linode_manager api_key=1234 name=server_name  plan='Linode 512' datacenter=Tokyo payment_term=1 kernel=3.7.5-linode48 state=present root_disk_size=24320 swap_disk_size=256 root_password=hunter2 wait=true
+```
+* Restart a Linode called webserver01 and wait for it to finish booting
+
+```
+local_action: linode_manager name=webserver01 wait=yes
+```
 
 ## Dependacies
 
