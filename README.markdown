@@ -6,7 +6,7 @@ A simple way to manage Linodes via Ansible. Supports creating, destroying, shutt
 
 ## Installation
 
-Copy the library direction into the directory where your Playbooks are located.
+Copy the library directly into the directory where your Playbooks are located.
 
 ```
 > cp -R library /etc/ansible/company_name/
@@ -142,7 +142,7 @@ local_action: linode_manager api_key=1234 name=server_name  plan='Linode 512' da
 local_action: linode_manager name=webserver01 wait=yes
 ```
 
-## Dependacies
+## Dependencies
 
 Requires **python-linode** available via pip.
 
