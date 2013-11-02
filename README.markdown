@@ -1,4 +1,6 @@
-# Linode Module for Ansible
+# Linode Module for Ansible (deprecated)
+
+This module is now deprecated as a *different* Linode module has been integrated into Ansible core.
 
 ## Overview
 
